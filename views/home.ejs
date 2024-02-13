@@ -1,0 +1,112 @@
+<!-- views/home.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="../login_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+          integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../history.css">
+</head>
+
+<body class="body">
+<nav class="navbar navbar-expand-lg navbar-dark bg-custom fixed-top">
+    <!-- Add 'fixed-top' class to make the navbar sticky at the top -->
+    <a class="navbar-brand" href="#">Phone Validation</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/email-validator">Email Validation </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/history">History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">admin</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="login-page">
+    <h1>Phone Validation</h1>
+    <div class="form">
+        <!-- Form to input phone number and country code -->
+        <form id="phoneForm" onsubmit="event.preventDefault(); validatePhoneNumber()">
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" required>
+
+            <label for="countryCode">Country Code:</label>
+            <input type="text" id="countryCode" name="countryCode" required>
+
+            <button type="submit">Validate</button>
+        </form>
+
+        <!-- Display validation results here -->
+        <div id="validationResults"></div>
+    </div>
+</div>
+
+<!-- Add Bootstrap JS and Popper.js scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    // Function to validate phone number
+    async function validatePhoneNumber() {
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const countryCode = document.getElementById("countryCode").value;
+
+        try {
+            const response = await axios.post('/phone-validate', {
+                number: phoneNumber,
+                'country-code': countryCode
+            });
+
+            // Display validation results
+            const validationResults = document.getElementById("validationResults");
+
+            // Check if it's a mobile or landline number
+            let typeMessage = '';
+            if (response.data.valid) {
+                if (response.data['prefix-network']) {
+                    typeMessage = `Type: Mobile (${response.data['prefix-network']})`;
+                } else {
+                    typeMessage = 'Type: Landline';
+                }
+            } else {
+                typeMessage = 'Invalid phone number';
+            }
+
+            validationResults.innerHTML = `
+                    <p>Valid: ${response.data.valid}</p>
+                    <p>Country: ${response.data.country}</p>
+                    <p>Location: ${response.data.location}</p>
+                    <p>${typeMessage}</p>
+                `;
+        } catch (error) {
+            console.error(error);
+            alert("Error validating phone number.");
+        }
+    }
+</script>
+</body>
+
+</html>

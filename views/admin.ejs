@@ -1,0 +1,85 @@
+<!-- admin.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../login_style.css">
+</head>
+
+<body class="body">
+<nav class="navbar navbar-expand-lg navbar-dark bg-custom">
+    <a class="navbar-brand" href="#">Admin Panel</a>
+
+    <!-- Add a user name in the navbar -->
+    <span class="navbar-text ml-auto">
+        Admin: yersultan
+    </span>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/home">Phone Validator</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/email-validator">Email Validator</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/history">History</a>
+            </li>
+            <!-- Add more navigation links as needed -->
+        </ul>
+    </div>
+</nav>
+<div class="form">
+    <h2>Admin Panel</h2>
+
+    <!-- Display user information and allow admin actions -->
+    <% for (const user of users) { %>
+        <div>
+            <p>User ID: <%= user.userID %></p>
+            <p>Username: <%= user.name %></p>
+            <p>Admin: <%= user.isAdmin ? 'Yes' : 'No' %></p>
+            <!-- Add other user information as needed -->
+
+            <!-- Add edit and delete buttons -->
+            <form action="/admin/edit/<%= user.userID %>" method="get">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+
+            <form action="/admin/delete/<%= user.userID %>" method="post">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+        <hr>
+    <% } %>
+
+    <!-- Form to add a new user -->
+    <form class="form" action="/admin/add" method="post">
+        <label for="newUsername">New Username:</label>
+        <input type="text" id="newUsername" name="newUsername" required>
+
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+
+        <label for="isAdmin">Is Admin:</label>
+        <input type="checkbox" id="isAdmin" name="isAdmin">
+
+        <button type="submit" class="btn btn-success">Add User</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
